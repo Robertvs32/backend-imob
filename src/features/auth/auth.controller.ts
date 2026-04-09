@@ -1,11 +1,25 @@
-import { type Request, type Response } from "express"
-import { type ReturnLogin, BodyLogin } from "./auth.types.js";
+import { type Request, type Response, type NextFunction  } from "express"
+import { type ReturnLogin, type BodyLogin } from "./auth.types.js";
+import AuthServices from "./auth.services.js";
 
 const AuthController = {
 
-    login: async (req: Request, res: Response) => {
+    login: async (req: Request, res: Response, next: NextFunction) => {
         const { email, senha }: BodyLogin = req.body;
-        const { objUser, token, refreshToken }: ReturnLogin = await authServices.login(email, senha);
+        try{
+            const { objUser, token, refreshToken }: ReturnLogin = await AuthServices.login(email, senha);
+
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                sameSite: 'none',
+                secure: true
+            });
+
+            res.status(200).json({objUser, token});
+
+        }catch(error){
+            next(error) //PASSA O ERRO PRO MIDDLEWARE DE ERROS
+        }
     }
 
 }
