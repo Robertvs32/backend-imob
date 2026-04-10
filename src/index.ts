@@ -2,6 +2,7 @@ import express from 'express'
 import { errMiddleware } from './middlewares/err.middlewares.js';
 import cors from 'cors';
 import config from './config/config.js';
+import AuthRouter from './features/auth/auth.routes.js';
 
 const app = express()
 
@@ -11,6 +12,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(AuthRouter)
 app.use(errMiddleware);
 
 app.listen(config.port, () => {

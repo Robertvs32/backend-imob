@@ -7,7 +7,7 @@ dotenv.config({path: path.resolve(process.cwd(), '.env')});
 const config = {
     port: process.env.PORT as string,
     host: process.env.HOST as string,
-    user: process.env.USER as string,
+    user: process.env.DB_USER as string,
     db: process.env.DB as string,
     password: process.env.PASSWORD as string,
     secret_key_token: process.env.SECRET_KEY_TOKEN as string,

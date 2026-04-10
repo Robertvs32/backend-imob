@@ -20,6 +20,16 @@ const AuthController = {
         }catch(error){
             next(error) //PASSA O ERRO PRO MIDDLEWARE DE ERROS
         }
+    },
+
+    cadastro: async (req: Request, res: Response, next: NextFunction) => {
+        const { role } = req.body;
+
+        try{
+            AuthServices
+        }catch(error){
+            next(error);
+        }
     }
 
 }

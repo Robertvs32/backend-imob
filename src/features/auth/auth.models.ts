@@ -5,7 +5,7 @@ const AuthModels = {
 
     verificaUsuario: async (email: string): Promise<ReturnVerificaUsuario | null> => {
         const sql = 
-        `SELECT id_usuario, id_empresa, nome, hash_senha, id_roles 
+        `SELECT id_usuario, id_empresa, nome, hash_senha, id_role 
          FROM usuarios WHERE email = ?
         `
         const [rows] = await pool.execute<ReturnVerificaUsuario[]>(sql, [email]);

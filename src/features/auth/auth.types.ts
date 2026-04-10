@@ -1,9 +1,11 @@
-import type { RowDataPacket } from "mysql2"
+import type { RowDataPacket } from "mysql2";
+import type { Request } from "express";
+import type { JwtPayload } from "jsonwebtoken";
 
 export interface ObjUser{
     id_usuario: number,
     id_empresa: number,
-    id_roles: number,
+    id_role: number,
     nome: string
 }
 
@@ -23,5 +25,17 @@ export interface ReturnVerificaUsuario extends RowDataPacket{
     id_empresa: number,
     nome: string,
     hash_senha: string,
-    id_roles: number
+    id_role: number
+}
+
+export interface UserRequest extends Request{
+    id_usuario: number,
+    id_empresa: number,
+    id_role: number
+}
+
+export interface Payload extends JwtPayload{
+    id_usuario: number,
+    id_empresa: number,
+    id_role: number
 }

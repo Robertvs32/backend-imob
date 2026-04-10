@@ -12,7 +12,6 @@ CREATE TABLE empresas(
 CREATE TABLE roles(
     id_role INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(30) NOT NULL,  
-    descricao VARCHAR(100),
     created_at DATETIME DEFAULT (NOW())
 );
 
@@ -115,6 +114,7 @@ CREATE TABLE imoveis(
     codigo_imovel VARCHAR(20),
     valor_iptu DECIMAL(10,2),
     valor_condominio DECIMAL(10,2),
+    link_matricula VARCHAR(150),
     created_at DATETIME DEFAULT (NOW()),
 
     CONSTRAINT FOREIGN KEY(id_empresa) REFERENCES empresas(id_empresa)

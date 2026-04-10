@@ -1,14 +1,16 @@
 import { type ObjUser, type ReturnLogin, type ReturnVerificaUsuario } from "./auth.types.js"
 import AuthModels from "./auth.models.js";
 import { AppError } from "../../middlewares/err.middlewares.js";
-import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
 import config from "../../config/config.js";
 
 const AuthServices = {
 
     login: async (email: string, senha: string): Promise<ReturnLogin> => {
         const dadosUsuario: ReturnVerificaUsuario | null = await AuthModels.verificaUsuario(email);
+
+        console.log(jwt)
 
         if(!dadosUsuario){
             throw new AppError("Verifique email ou senha!", 401);
@@ -23,7 +25,7 @@ const AuthServices = {
         const payload: ObjUser = {
             id_usuario: dadosUsuario.id_usuario,
             id_empresa: dadosUsuario.id_empresa,
-            id_roles: dadosUsuario.id_roles,
+            id_role: dadosUsuario.id_role,
             nome: dadosUsuario.nome
         }
 
