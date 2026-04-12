@@ -12,7 +12,8 @@ const AuthController = {
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
                 sameSite: 'none',
-                secure: true
+                secure: true,
+                partitioned: true
             });
 
             res.status(200).json({objUser, token});

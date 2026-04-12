@@ -6,3 +6,5 @@ const gerarHash = async (senha) => {
 }
 
 gerarHash('12344321');
+
+//GERAR HASH DE SENHA PRA CRIAR O DIRETOR GERAL, QUE NAO TEM ENDPOINT DE CADASTRO

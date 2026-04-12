@@ -7,7 +7,7 @@ import AuthRouter from './features/auth/auth.routes.js';
 const app = express()
 
 app.use(cors({
-    origin: 'url',
+    origin: 'http://localhost:5173',
     credentials: true
 }));
 

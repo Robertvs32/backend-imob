@@ -10,8 +10,6 @@ const AuthServices = {
     login: async (email: string, senha: string): Promise<ReturnLogin> => {
         const dadosUsuario: ReturnVerificaUsuario | null = await AuthModels.verificaUsuario(email);
 
-        console.log(jwt)
-
         if(!dadosUsuario){
             throw new AppError("Verifique email ou senha!", 401);
         }
