@@ -7,6 +7,8 @@ const config = {
     db_name: process.env.DB_NAME,
     db_pass: process.env.DB_PASS,
     db_port: process.env.DB_PORT,
+    secretkey_token: process.env.SECRETKEY_TOKEN,
+    secretkey_refreshtoken: process.env.SECRETKEY_REFRESHTOKEN,
     url: ["url1", "url2"]
 }
 

@@ -17,7 +17,7 @@ const pool = mysql.createPool({
 
 export const testeConexao = async () => {
     try{
-        const [rows] = await pool.execute<RowDataPacket[]>("SELECT * FROM usuarios")
+        const [rows] = await pool.execute<RowDataPacket[]>("SELECT 'Conexao realizada!'")
         console.log(rows)
     }catch(error){
         console.log(error)
