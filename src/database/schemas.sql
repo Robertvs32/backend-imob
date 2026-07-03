@@ -1,6 +1,5 @@
 -- INSERIR SCHEMAS DO MYSQL
 
-
 -- TABELA EMPRESAS --------------------------------------------------------------------------------------------------------
 CREATE TABLE empresas(
     id_empresa INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,7 +31,6 @@ VALUES
 ('cliente'),
 ('proprietario');
 ---------------------------------------------------------------------------------------------------------------------------
-
 
 -- TABELA USUARIOS --------------------------------------------------------------------------------------------------------
 CREATE TABLE usuarios(
@@ -66,5 +64,193 @@ VALUES(
     'Sao Paulo',
     1
 );
+---------------------------------------------------------------------------------------------------------------------------
 
+-- TABELA IMOVEIS ---------------------------------------------------------------------------------------------------------
+CREATE TABLE imoveis(
+   id_imovel INT NOT NULL AUTO_INCREMENT,
+   id_empresa INT NOT NULL,
+   endereco VARCHAR(100) NOT NULL,
+   numero VARCHAR(12) NOT NULL,
+   cep VARCHAR(9) NOT NULL,
+  
+   CONSTRAINT PK_ID_IMOVEL PRIMARY KEY(id_imovel),
+   CONSTRAINT FK_ID_EMPRESA_IMOVEL FOREIGN KEY(id_empresa) REFERENCES empresas(id_empresa)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA EQUIPES ---------------------------------------------------------------------------------------------------------
+CREATE TABLE equipes(
+    id_equipe INT NOT NULL AUTO_INCREMENT,
+    id_gerente INT NOT NULL,
+    created_id_user INT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT PK_ID_EQUIPE PRIMARY KEY(id_equipe),
+    CONSTRAINT FK_ID_GERENTE_EQUIPE FOREIGN KEY(id_gerente) REFERENCES usuarios(id_usuario),
+    CONSTRAINT FK_ID_CREATED_ID_USER FOREIGN KEY(created_id_user) REFERENCES usuarios(id_usuario)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA LINK - CORRETOR / EQUIPE ----------------------------------------------------------------------------------------
+CREATE TABLE corretores_equipe(
+    id_link_corretor_equipe INT NOT NULL AUTO_INCREMENT,
+    id_corretor INT UNIQUE NOT NULL,
+    id_equipe INT NOT NULL,
+
+    CONSTRAINT PK_ID_LINK_CORRETOR_EQUIPE PRIMARY KEY(id_link_corretor_equipe),
+    CONSTRAINT FK_ID_CORRETOR_EQUIPE FOREIGN KEY(id_corretor) REFERENCES usuarios(id_usuario),
+    CONSTRAINT FK_ID_EQUIPE FOREIGN KEY(id_equipe) REFERENCES equipes(id_equipe)  
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA LINK - PROPRIETARIO / IMOVEIS -----------------------------------------------------------------------------------
+CREATE TABLE proprietarios_imoveis(
+   id_link_proprietario_imovel INT NOT NULL AUTO_INCREMENT,
+   id_proprietario INT NOT NULL,
+   id_imovel INT NOT NULL,
+
+   CONSTRAINT PK_ID_LINK_PROPRIETARIO_IMOVEL PRIMARY KEY(id_link_proprietario_imovel),
+   CONSTRAINT FK_ID_PROPRIETARIO FOREIGN KEY(id_proprietario) REFERENCES usuarios(id_usuario),
+   CONSTRAINT FK_ID_IMOVEL_LINK_PROPRIETARIO_IMOVEL FOREIGN KEY(id_imovel) REFERENCES imoveis(id_imovel),
+   CONSTRAINT UQ_PROPRIETARIO_IMOVEL UNIQUE (id_proprietario, id_imovel)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA TIPOS PROPOSTAS -------------------------------------------------------------------------------------------------
+CREATE TABLE tipos_proposta(
+   id_tipo_proposta INT NOT NULL AUTO_INCREMENT,
+   nome VARCHAR(50) UNIQUE NOT NULL,
+
+   CONSTRAINT PK_ID_TIPO_PROPOSTA PRIMARY KEY(id_tipo_proposta)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA STATUS PROPOSTAS ------------------------------------------------------------------------------------------------
+CREATE TABLE status_proposta(
+   id_status_proposta INT NOT NULL AUTO_INCREMENT,
+   id_tipo_proposta INT NOT NULL,
+   nome VARCHAR(50) NOT NULL,
+
+   CONSTRAINT PK_ID_STATUS_PROPOSTA PRIMARY KEY(id_status_proposta),
+   CONSTRAINT FK_ID_TIPO_PROPOSTA_STATUS_PROPOSTA FOREIGN KEY(id_tipo_proposta) REFERENCES tipos_proposta(id_tipo_proposta)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA PROPOSTAS -------------------------------------------------------------------------------------------------------
+CREATE TABLE propostas(
+   id_proposta INT NOT NULL AUTO_INCREMENT,
+   id_empresa INT NOT NULL,
+   id_imovel INT NOT NULL,
+   id_equipe INT NOT NULL,
+   id_tipo_proposta INT NOT NULL,
+   id_status_proposta INT NOT NULL,
+   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   valor DECIMAL(12,2),   
+
+   CONSTRAINT PK_ID_PROPOSTA PRIMARY KEY(id_proposta),
+   CONSTRAINT FK_ID_EMPRESA_PROPOSTA FOREIGN KEY(id_empresa) REFERENCES empresas(id_empresa),
+   CONSTRAINT FK_ID_IMOVEL_PROPOSTA FOREIGN KEY(id_imovel) REFERENCES imoveis(id_imovel),
+   CONSTRAINT FK_ID_EQUIPE_PROPOSTA FOREIGN KEY(id_equipe) REFERENCES equipes(id_equipe),
+   CONSTRAINT FK_ID_TIPO_PROPOSTA FOREIGN KEY(id_tipo_proposta) REFERENCES tipos_proposta(id_tipo_proposta),
+   CONSTRAINT FK_ID_STATUS_PROPOSTA FOREIGN KEY(id_status_proposta) REFERENCES status_proposta(id_status_proposta)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA PAPEIS CORRETOR / PROPOSTA --------------------------------------------------------------------------------------
+CREATE TABLE papeis_corretor(
+   id_papel_corretor INT NOT NULL AUTO_INCREMENT,
+   nome VARCHAR(50) NOT NULL,
+
+   CONSTRAINT PK_ID_PAPEL_CORRETOR PRIMARY KEY(id_papel_corretor)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA LINK - CORRETOR / PROPOSTA --------------------------------------------------------------------------------------
+CREATE TABLE corretores_propostas(
+   id_link_corretor_proposta INT NOT NULL AUTO_INCREMENT,
+   id_corretor INT NOT NULL,
+   id_papel_corretor INT NOT NULL,
+   id_proposta INT NOT NULL,
+
+   CONSTRAINT PK_ID_LINK_CORRETOR_PROPOSTA PRIMARY KEY(id_link_corretor_proposta),
+   CONSTRAINT FK_ID_CORRETOR FOREIGN KEY(id_corretor) REFERENCES usuarios(id_usuario),
+   CONSTRAINT FK_ID_PAPEL_CORRETOR FOREIGN KEY(id_papel_corretor) REFERENCES papeis_corretor(id_papel_corretor),
+   CONSTRAINT FK_ID_PROPOSTA FOREIGN KEY(id_proposta) REFERENCES propostas(id_proposta),
+   CONSTRAINT UQ_CORRETORES_PROPOSTAS UNIQUE(id_corretor, id_proposta, id_papel_corretor)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA FORMAS DE PAGAMENTO / PROPOSTAS ---------------------------------------------------------------------------------
+CREATE TABLE formas_pagamento(
+   id_forma_pagamento INT NOT NULL AUTO_INCREMENT,
+   id_tipo_proposta INT NOT NULL,
+   nome VARCHAR(50) NOT NULL,
+
+   CONSTRAINT PK_ID_FORMA_PAGAMENTO PRIMARY KEY(id_forma_pagamento),
+   CONSTRAINT FK_ID_TIPO_PROPOSTA_FORMAS_PAGAMENTO FOREIGN KEY(id_tipo_proposta) REFERENCES tipos_proposta(id_tipo_proposta)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA STATUS PAGAMENTOS -----------------------------------------------------------------------------------------------
+CREATE TABLE status_pagamentos(
+   id_status_pagamento INT NOT NULL AUTO_INCREMENT,
+   nome VARCHAR(50) NOT NULL,
+
+   CONSTRAINT PK_ID_STATUS_PAGAMENTO PRIMARY KEY(id_status_pagamento)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA PAGAMENTOS / PROPOSTAS ------------------------------------------------------------------------------------------
+CREATE TABLE pagamentos(
+   id_pagamento INT NOT NULL AUTO_INCREMENT,
+   id_proposta INT NOT NULL,
+   id_forma_pagamento INT NOT NULL,
+   id_status INT NOT NULL,
+   valor DECIMAL(12,2),
+
+   CONSTRAINT PK_ID_PAGAMENTO PRIMARY KEY(id_pagamento),
+   CONSTRAINT FK_ID_PROPOSTA_PAGAMENTO FOREIGN KEY(id_proposta) REFERENCES propostas(id_proposta),
+   CONSTRAINT FK_ID_FORMA_PAGAMENTO FOREIGN KEY(id_forma_pagamento) REFERENCES formas_pagamento(id_forma_pagamento),
+   CONSTRAINT FK_ID_STATUS_PAGAMENTO FOREIGN KEY(id_status) REFERENCES status_pagamentos(id_status_pagamento)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA STATUS COMISSOES ------------------------------------------------------------------------------------------------
+CREATE TABLE status_comissoes(
+   id_status_comissao INT NOT NULL AUTO_INCREMENT,
+   nome VARCHAR(50) UNIQUE NOT NULL,
+
+   CONSTRAINT PK_STATUS_COMISSAO PRIMARY KEY(id_status_comissao)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELAS COMISSOES -------------------------------------------------------------------------------------------------------
+CREATE TABLE comissoes(
+   id_comissao INT NOT NULL AUTO_INCREMENT,
+   id_proposta INT NOT NULL,
+   id_corretor INT NOT NULL,
+   valor DECIMAL(10,2),
+   id_status_comissao INT NOT NULL,
+
+
+   CONSTRAINT PK_ID_COMISSAO PRIMARY KEY(id_comissao),
+   CONSTRAINT FK_ID_PROPOSTA_COMISSAO FOREIGN KEY(id_proposta) REFERENCES propostas(id_proposta),
+   CONSTRAINT FK_ID_STATUS_COMISSAO FOREIGN KEY(id_status_comissao) REFERENCES status_comissoes(id_status_comissao),
+   CONSTRAINT FK_ID_CORRETOR_COMISSAO FOREIGN KEY(id_corretor) REFERENCES usuarios(id_usuario)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA DESPESAS --------------------------------------------------------------------------------------------------------
+CREATE TABLE despesas(
+   id_despesa INT NOT NULL AUTO_INCREMENT,
+   id_proposta INT NOT NULL,
+   id_corretor INT NOT NULL,
+   valor DECIMAL(10,2),
+
+
+   CONSTRAINT PK_ID_DESPESA PRIMARY KEY(id_despesa),
+   CONSTRAINT FK_ID_PROPOSTA_DESPESA FOREIGN KEY(id_proposta) REFERENCES propostas(id_proposta),
+   CONSTRAINT FK_ID_CORRETOR_DESPESA FOREIGN KEY(id_corretor) REFERENCES usuarios(id_usuario)
+);
 ---------------------------------------------------------------------------------------------------------------------------
