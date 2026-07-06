@@ -1,4 +1,4 @@
-import { ObjUser } from "../usuario/usuario.type"
+import { ObjUser } from "../usuarios/usuario.type"
 
 export interface LoginDto{
     email: string,
