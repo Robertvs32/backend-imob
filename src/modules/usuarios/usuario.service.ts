@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import { DadosCadastroUsuario } from "./usuario.type";
 import pool from "../../database/connection";
 import CorretoresModel from "../corretores/corretores.model";
+import ClientesModel from "../clientes/clientes.model";
 
 const UsuarioService = {
 
@@ -28,31 +29,31 @@ const UsuarioService = {
         const connection = await pool.getConnection();
 
         try{
+            await connection.beginTransaction()
             //cadastra usuario
             const id_user = await UsuarioModel.cadastrarUsuario(newDadosUser, id_empresa, connection);
 
             //cadastrar usuario pela role
             const role = dadosUsuario.id_role;
 
-            //8 - proprietario
-            //7 - cliente
-            //6 e 5 corretor
             switch(role){
+                //DADOS CORRETOR
                 case 5:
                 case 6:
                     await CorretoresModel.cadastrarCorretor(Number(id_user), connection);
                     break;
+                //DADOS USUARIO
                 case 7:
-                    break;
                 case 8:
+                    await UsuarioModel.criarDadosUsuario(Number(id_user), connection)
                     break;
                 default:
                     throw new AppError("Role inválida!", 500);
             }
 
-
+            await connection.commit()
         }catch(error: any){
-            connection.rollback();
+            await connection.rollback();
             throw new AppError(`Erro ao cadastrar usuário: ${error.message}`, 500);
         }finally{
             connection.release()

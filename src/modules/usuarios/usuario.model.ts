@@ -53,6 +53,14 @@ const UsuarioModel = {
         if(usuario) return usuario.insertId;
 
         return null;
+    },
+
+    criarDadosUsuario: async (id_usuario: number, connection: PoolConnection) => {
+        const sql = `
+            INSERT INTO dados_usuarios(id_usuario)
+            VALUE(?);
+        `
+        await connection.execute(sql, [id_usuario]);
     }
 
 }

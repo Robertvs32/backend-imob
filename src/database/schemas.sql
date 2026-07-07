@@ -98,6 +98,17 @@ CREATE TABLE dados_clientes(
 );
 ---------------------------------------------------------------------------------------------------------------------------
 
+-- TABELA DADOS PROPRIETARIOS ---------------------------------------------------------------------------------------------
+CREATE TABLE dados_corretores(
+   id_dados_corretor INT NOT NULL AUTO_INCREMENT,
+   id_corretor INT NOT NULL,
+   creci VARCHAR(12),
+
+   CONSTRAINT PK_ID_DADOS_CORRETOR PRIMARY KEY(id_dados_corretor),
+   CONSTRAINT FK_ID_CORRETOR FOREIGN KEY(id_corretor) REFERENCES usuarios(id_usuario)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
 -- TABELA IMOVEIS ---------------------------------------------------------------------------------------------------------
 CREATE TABLE imoveis(
    id_imovel INT NOT NULL AUTO_INCREMENT,
@@ -229,9 +240,9 @@ CREATE TABLE corretores_propostas(
    id_proposta INT NOT NULL,
 
    CONSTRAINT PK_ID_LINK_CORRETOR_PROPOSTA PRIMARY KEY(id_link_corretor_proposta),
-   CONSTRAINT FK_ID_CORRETOR FOREIGN KEY(id_corretor) REFERENCES usuarios(id_usuario),
-   CONSTRAINT FK_ID_PAPEL_CORRETOR FOREIGN KEY(id_papel_corretor) REFERENCES papeis_corretor(id_papel_corretor),
-   CONSTRAINT FK_ID_PROPOSTA FOREIGN KEY(id_proposta) REFERENCES propostas(id_proposta),
+   CONSTRAINT FK_ID_CORRETOR_PROPOSTA FOREIGN KEY(id_corretor) REFERENCES usuarios(id_usuario),
+   CONSTRAINT FK_ID_PAPEL_CORRETOR_PROPOSTA FOREIGN KEY(id_papel_corretor) REFERENCES papeis_corretor(id_papel_corretor),
+   CONSTRAINT FK_ID_PROPOSTA_PROPOSTA FOREIGN KEY(id_proposta) REFERENCES propostas(id_proposta),
    CONSTRAINT UQ_CORRETORES_PROPOSTAS UNIQUE(id_corretor, id_proposta, id_papel_corretor)
 );
 ---------------------------------------------------------------------------------------------------------------------------

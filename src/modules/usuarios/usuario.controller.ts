@@ -17,7 +17,7 @@ const UsuariosController = {
 
             await UsuarioService.cadastrarUsuario(dadosUsuario, Number(id_empresa));
 
-            res.status(200).json({dadosUsuario, id_empresa});
+            res.status(200).json({mensagem: "Usuário cadastrado com sucesso!"});
         }catch(error){
             next(error)
         }

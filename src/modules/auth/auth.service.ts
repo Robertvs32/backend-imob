@@ -10,8 +10,8 @@ const AuthService = {
     login: async (email: string, senha: string): Promise<ReturnLogin> => {
         
         // 1. Busca os dados do usuario pelo email
-        const dadosUsuario: ObjUserCompleto = await UsuarioModel.buscaUsuarioEmail(email);
-
+        const dadosUsuario: ObjUserCompleto | null = await UsuarioModel.buscaUsuarioEmail(email);
+        
         // 2. Verifica se o usuario existe
         if(!dadosUsuario) throw new AppError('Verifique email ou senha!', 404);
 
