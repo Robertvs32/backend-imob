@@ -2,6 +2,7 @@ import { NextFunction, Response, Request } from "express"
 import { LoginDto, ReturnLogin } from "./auth.dto";
 import AuthService from "./auth.service";
 import { MyRequest } from "../../shared/types/request";
+import { AppError } from "../../shared/middlewares/err.middleware";
 
 const AuthController = {
 
@@ -46,6 +47,9 @@ const AuthController = {
     refresh: async (req: MyRequest, res: Response, next: NextFunction) => {
         try{
             const refreshToken = req.cookies.refreshToken;
+
+            if(!refreshToken) throw new AppError("Refresh Token nao foi encontrado!", 404);
+
             const dadosUsuario = await AuthService.refresh(refreshToken);
 
             res.cookie('token', dadosUsuario.token, {

@@ -12,6 +12,15 @@ export const criarToken = (payload: any, secretkey: string, duracao: SignOptions
 }
 
 export const verificaToken = (token: string, secretkey: string) => {
-    const result: PayloadJwt = jwt.verify(token, secretkey) as PayloadJwt;
-    return result; 
+    const result = jwt.verify(token, secretkey) as PayloadJwt;
+    const {id_usuario, id_empresa, id_role, nome} = result
+
+    const payload: PayloadJwt = {
+        id_usuario,
+        id_empresa,
+        nome,
+        id_role
+    }
+
+    return payload; 
 }
