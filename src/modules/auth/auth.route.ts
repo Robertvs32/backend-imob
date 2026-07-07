@@ -7,6 +7,4 @@ AuthRouter.post('/login', AuthController.login);
 AuthRouter.post('/logout', AuthController.logout);
 AuthRouter.post('/refresh', AuthController.refresh);
 
-console.log("aaaa")
-
 export default AuthRouter;

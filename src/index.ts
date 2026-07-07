@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import { errMiddleware } from './shared/middlewares/err.middleware.ts';
 import { testeConexao } from './database/connection.ts';
 import AuthRouter from './modules/auth/auth.route.ts';
+import UsuariosRouter from './modules/usuarios/usuario.route.ts';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use(AuthRouter)
+app.use(UsuariosRouter)
 
 app.use(errMiddleware);
 

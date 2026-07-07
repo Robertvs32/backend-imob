@@ -56,13 +56,45 @@ VALUES(
     1, 
     'Osvaldo Zuccaro',
     'osvaldozuccaro@gmail.com', 
-    '$2b$10$975h7q6E1gS5C/CBsAsaVOXG02FVkJP5HQN6YQB6H2C/tfZG8Im02', --osvaldo1234
+    '$2b$10$975h7q6E1gS5C/CBsAsaVOXG02FVkJP5HQN6YQB6H2C/tfZG8Im02',
     '(11) 94554-2223',
     '07124-555',
     34,
     'Guarulhos',
     'Sao Paulo',
     1
+);
+-- senha: osvaldo1234
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA DADOS CORRETORES ------------------------------------------------------------------------------------------------
+CREATE TABLE dados_corretores(
+   id_dados_corretor INT NOT NULL AUTO_INCREMENT,
+   id_corretor INT NOT NULL,
+   creci VARCHAR(12),
+
+   CONSTRAINT PK_ID_DADOS_CORRETOR PRIMARY KEY(id_dados_corretor),
+   CONSTRAINT FK_ID_CORRETOR FOREIGN KEY(id_corretor) REFERENCES usuarios(id_usuario)
+);
+---------------------------------------------------------------------------------------------------------------------------
+
+-- TABELA DADOS CLIENTES --------------------------------------------------------------------------------------------------
+CREATE TABLE dados_clientes(
+   id_dados_cliente INT NOT NULL AUTO_INCREMENT,
+   id_cliente INT NOT NULL,
+   rg VARCHAR(20),
+   cpf VARCHAR(20),
+   renda_bruta DECIMAL(12,2) DEFAULT(0) NOT NULL,
+   estado_civil ENUM('Solteiro(a)', 'Casado(a)', 'Viuvo(a)', 'Divorciado(a)') NOT NULL,
+   profissao VARCHAR(80),
+   link_doc VARCHAR(512) DEFAULT NULL,
+   link_holerite VARCHAR(512) DEFAULT NULL,
+   link_irpf VARCHAR(512) DEFAULT NULL,
+   link_residencia VARCHAR(512) DEFAULT NULL,
+   link_certidao VARCHAR(512) DEFAULT NULL,
+
+   CONSTRAINT PK_ID_DADOS_CLIENTE PRIMARY KEY(id_dados_cliente),
+   CONSTRAINT FK_ID_CLIENTE FOREIGN KEY(id_cliente) REFERENCES usuarios(id_usuario)
 );
 ---------------------------------------------------------------------------------------------------------------------------
 
@@ -124,6 +156,11 @@ CREATE TABLE tipos_proposta(
 
    CONSTRAINT PK_ID_TIPO_PROPOSTA PRIMARY KEY(id_tipo_proposta)
 );
+
+INSERT INTO tipos_proposta(nome)
+VALUE
+('venda'),
+('locacao');
 ---------------------------------------------------------------------------------------------------------------------------
 
 -- TABELA STATUS PROPOSTAS ------------------------------------------------------------------------------------------------
@@ -135,6 +172,19 @@ CREATE TABLE status_proposta(
    CONSTRAINT PK_ID_STATUS_PROPOSTA PRIMARY KEY(id_status_proposta),
    CONSTRAINT FK_ID_TIPO_PROPOSTA_STATUS_PROPOSTA FOREIGN KEY(id_tipo_proposta) REFERENCES tipos_proposta(id_tipo_proposta)
 );
+
+INSERT INTO status_proposta(id_tipo_proposta, nome)
+VALUES
+(1, "Pendente documentos"),
+(1, "Pendente pagamentos"),
+(1, "Aguardando assinatura do contrato"),
+(1, "Cancelada"),
+(1, "Concluída"),
+(2, "Pendente análise de crédito"),
+(2, "Pendente pagamentos"),
+(2, "Aguardando assinatura do contrato"),
+(2, "Cancelada"),
+(2, "Concluída");
 ---------------------------------------------------------------------------------------------------------------------------
 
 -- TABELA PROPOSTAS -------------------------------------------------------------------------------------------------------
@@ -164,6 +214,11 @@ CREATE TABLE papeis_corretor(
 
    CONSTRAINT PK_ID_PAPEL_CORRETOR PRIMARY KEY(id_papel_corretor)
 );
+
+INSERT INTO papeis_corretor(nome)
+VALUES
+('captador'),
+('vendedor');
 ---------------------------------------------------------------------------------------------------------------------------
 
 -- TABELA LINK - CORRETOR / PROPOSTA --------------------------------------------------------------------------------------
@@ -190,6 +245,18 @@ CREATE TABLE formas_pagamento(
    CONSTRAINT PK_ID_FORMA_PAGAMENTO PRIMARY KEY(id_forma_pagamento),
    CONSTRAINT FK_ID_TIPO_PROPOSTA_FORMAS_PAGAMENTO FOREIGN KEY(id_tipo_proposta) REFERENCES tipos_proposta(id_tipo_proposta)
 );
+
+INSERT INTO formas_pagamento(id_tipo_proposta, nome)
+VALUES
+(1, 'Fgts'),
+(1, 'Pix'),
+(1, 'Transferência'),
+(1, 'Permuta'),
+(1, 'Financiamento'),
+(1, 'Boleto bancário'),
+(2, 'Pix'),
+(2, 'Boleto bancário'),
+(2, 'Transferência');
 ---------------------------------------------------------------------------------------------------------------------------
 
 -- TABELA STATUS PAGAMENTOS -----------------------------------------------------------------------------------------------
@@ -199,6 +266,11 @@ CREATE TABLE status_pagamentos(
 
    CONSTRAINT PK_ID_STATUS_PAGAMENTO PRIMARY KEY(id_status_pagamento)
 );
+
+INSERT INTO status_pagamentos(nome)
+VALUES
+('pendente'),
+('pago');
 ---------------------------------------------------------------------------------------------------------------------------
 
 -- TABELA PAGAMENTOS / PROPOSTAS ------------------------------------------------------------------------------------------
@@ -206,10 +278,12 @@ CREATE TABLE pagamentos(
    id_pagamento INT NOT NULL AUTO_INCREMENT,
    id_proposta INT NOT NULL,
    id_forma_pagamento INT NOT NULL,
+   id_cliente INT NOT NULL,
    id_status INT NOT NULL,
    valor DECIMAL(12,2),
 
    CONSTRAINT PK_ID_PAGAMENTO PRIMARY KEY(id_pagamento),
+   CONSTRAINT PK_ID_CLIENTE_PAGAMENTO FOREIGN KEY(id_cliente) REFERENCES usuarios(id_usuario),
    CONSTRAINT FK_ID_PROPOSTA_PAGAMENTO FOREIGN KEY(id_proposta) REFERENCES propostas(id_proposta),
    CONSTRAINT FK_ID_FORMA_PAGAMENTO FOREIGN KEY(id_forma_pagamento) REFERENCES formas_pagamento(id_forma_pagamento),
    CONSTRAINT FK_ID_STATUS_PAGAMENTO FOREIGN KEY(id_status) REFERENCES status_pagamentos(id_status_pagamento)
@@ -223,6 +297,11 @@ CREATE TABLE status_comissoes(
 
    CONSTRAINT PK_STATUS_COMISSAO PRIMARY KEY(id_status_comissao)
 );
+
+INSERT INTO status_comissoes(nome)
+VALUES
+('pendente'),
+('paga');
 ---------------------------------------------------------------------------------------------------------------------------
 
 -- TABELAS COMISSOES -------------------------------------------------------------------------------------------------------
